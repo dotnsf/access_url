@@ -27,24 +27,6 @@ spec:
     spec:
       containers:
       - name: access-url
-        image: yourname/access_url
+        image: dotnsf/access_url
         ports:
         - containerPort: 8080
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: access-url.domain.local
-spec:
-  tls:
-  - hosts:
-    - access-url.domain.local
-    secretName: domain
-  rules:
-  - host: access-url.domain.local
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: access-url
-          servicePort: 8080
