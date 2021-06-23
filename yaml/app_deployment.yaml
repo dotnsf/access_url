@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: access_url
+spec:
+  selector:
+    app: access_url
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: access_url
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: access_url
+  template:
+    metadata:
+      labels:
+        app: access_url
+    spec:
+      containers:
+      - name: access_url
+        image: yourname/access_url
+        ports:
+        - containerPort: 8080
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: access_url.domain.local
+spec:
+  tls:
+  - hosts:
+    - access_url.domain.local
+    secretName: domain
+  rules:
+  - host: access_url.domain.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: access_url
+          servicePort: 8080
